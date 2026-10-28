@@ -12,12 +12,13 @@ Requirements: Python 3.11+, an authenticated Codex CLI in the same environment a
 your Codex chat, and the native sandbox required by that installation. The first
 tested Codex baseline is `0.164.0`. There are no extra Python runtime packages.
 
-Once the GitHub repository and release tag are published, replace `OWNER` below
-with its GitHub owner. These are release instructions, not a currently published
-repository address:
+Once the beta release tag is published, install it with the following commands.
+The tag is not published yet; use the
+[fresh-install candidate check](docs/RELEASING.md#fresh-install-candidate-check)
+to test an exact pushed commit before the release:
 
 ```bash
-codex plugin marketplace add OWNER/burnt-offering --ref v0.1.0-beta.1
+codex plugin marketplace add darvilp/burnt-offering --ref v0.1.0-beta.1
 codex plugin add burnt-offering@burnt-offering
 ```
 
@@ -46,8 +47,8 @@ checkout's `.agents/skills/pray` symlink is not needed by installed plugins.
 
 | Environment | Candidate status | Setup |
 |---|---|---|
-| Linux / WSL2 | 48 local tests, plugin lifecycle and signed-in deadline check passed; live early cancellation pending | Run Linux Python and Codex in the same environment. WSL has its own configuration and sign-in. |
-| Native Windows | 48 native tests and plugin lifecycle passed; signed-in runtime acceptance pending | Use Windows Python and Codex from PowerShell, with the Codex Windows sandbox set up. |
+| Linux / WSL2 | 49 local tests, plugin lifecycle and signed-in deadline check passed; live early cancellation pending | Run Linux Python and Codex in the same environment. WSL has its own configuration and sign-in. |
+| Native Windows | 49 native tests and plugin lifecycle passed; signed-in runtime acceptance pending | Use Windows Python and Codex from PowerShell, with the Codex Windows sandbox set up. |
 | macOS | Experimental; native CI and end-to-end acceptance pending | Use native Python and Codex. Automated checks do not establish a signed-in prayer run. |
 
 See [release readiness](docs/release-readiness.md) for actual evidence and pending

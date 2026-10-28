@@ -641,17 +641,21 @@ class Runner:
         emit({key: value[key] for key in ("run_id", "state", "elapsed_seconds", "active_batches",
                                         "completed_prayers", "stop_reason", "usage")})
 
-    def stop_reason(self):
+    def stop_reason(self, *, timer_expired=False):
+        now = self.clock()
+        if timer_expired:
+            # Windows timers can fire one monotonic clock tick before their deadline.
+            now += time.get_clock_info("monotonic").resolution
         if self.stop_event.is_set() or (self.path / "stop").exists():
             return "user_stop"
-        if self.deadline is not None and self.clock() >= self.deadline:
+        if self.deadline is not None and now >= self.deadline:
             return "duration_limit"
         budget = self.spec["limits"]["tokens"]
         if budget is not None and self.controller_tokens + self.usage.totals()["goal_tokens"] >= budget:
             return "token_limit"
         if self.goal.get("status") != "active":
             return "controller_goal_" + str(self.goal.get("status", "unknown"))
-        if any(self.clock() >= batch["deadline"] for batch in self.active.values()):
+        if any(now >= batch["deadline"] for batch in self.active.values()):
             return "batch_timeout"
         batches = self.spec["limits"]["batches"]
         if batches is not None and self.batch_count >= batches and not self.active:
@@ -814,7 +818,7 @@ class Runner:
                 except asyncio.TimeoutError:
                     pass
         except asyncio.TimeoutError:
-            self.reason = self.stop_reason() or "dispatch_uncertain"
+            self.reason = self.stop_reason(timer_expired=True) or "dispatch_uncertain"
         except (PrayerError, OSError, KeyError, TypeError, ValueError):
             self.reason = "backend_or_accounting_failure"
             self.usage_complete = False

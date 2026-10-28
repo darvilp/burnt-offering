@@ -489,6 +489,22 @@ class RunnerTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(status["usage"]["goal_tokens"], 100)
         self.assertEqual(status["stop_reason"], "token_limit")
 
+    async def test_early_timer_keeps_deadline_reason_without_early_admission_stop(self):
+        runner = await self.runner()
+        runner.clock = lambda: 9.99
+        runner.deadline = 10
+        with mock.patch.object(pray.time, "get_clock_info", return_value=mock.Mock(resolution=.015625)):
+            self.assertIsNone(runner.stop_reason())
+            self.assertEqual(runner.stop_reason(timer_expired=True), "duration_limit")
+            runner.deadline = None
+            runner.active = {"subject": {"deadline": 10}}
+            self.assertIsNone(runner.stop_reason())
+            self.assertEqual(runner.stop_reason(timer_expired=True), "batch_timeout")
+            runner.clock = lambda: 9.9
+            self.assertIsNone(runner.stop_reason(timer_expired=True))
+            runner.stop_event.set()
+            self.assertEqual(runner.stop_reason(timer_expired=True), "user_stop")
+
     async def test_clock_boundary_and_batch_timeout(self):
         runner = await self.runner()
         moment = [100.0]
