@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "name": "Journey Blessing",
+  "goal": "Safe travels for an upcoming trip",
+  "scope": {
+    "target_mode": "all",
+    "targets": [],
+    "excluded_traditions": [],
+    "tone": "playful"
+  },
+  "roster": {
+    "selection": "auto",
+    "count": 3,
+    "max_concurrency": 3,
+    "seed": 20261024,
+    "overrides": []
+  },
+  "rounds": {
+    "mode": "mixed",
+    "creative_weight": 1,
+    "ritual_weight": 2,
+    "max_duration_seconds": 90,
+    "max_total_rounds": 300,
+    "max_history_rounds_per_thread": 20
+  },
+  "execution": {
+    "model": "auto",
+    "reasoning_effort": "auto",
+    "read_only": true,
+    "disable_external_tools": true
+  },
+  "budget": {
+    "mode": "api",
+    "subscription": null,
+    "api": {
+      "max_estimated_usd": "2.00",
+      "safety_fraction": 0.15,
+      "pricing_catalog_version": "REPLACE_WITH_VERIFIED_CATALOG"
+    },
+    "max_elapsed_seconds": 1800
+  },
+  "reporting": {
+    "retain_transcripts": true,
+    "markdown_report": true
+  }
+}

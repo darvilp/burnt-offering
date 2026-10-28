@@ -1,0 +1,468 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/agentic-prayer/campaign.schema.json",
+  "title": "Agentic Prayer v1 Campaign Manifest",
+  "description": "Only user-approved policy and intent; runtime account state, live usage, tokens, and thread IDs belong in the SQLite ledger. Explicit approval is a separate CLI action.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target_mode": {
+          "enum": [
+            "all",
+            "single",
+            "selected",
+            "non_theistic"
+          ]
+        },
+        "targets": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "excluded_traditions": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 64,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "tone": {
+          "enum": [
+            "reverent",
+            "playful",
+            "absurd"
+          ]
+        }
+      },
+      "required": [
+        "target_mode",
+        "targets",
+        "excluded_traditions",
+        "tone"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "target_mode": {
+                "const": "single"
+              }
+            },
+            "required": [
+              "target_mode"
+            ]
+          },
+          "then": {
+            "properties": {
+              "targets": {
+                "minItems": 1,
+                "maxItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "target_mode": {
+                "const": "selected"
+              }
+            },
+            "required": [
+              "target_mode"
+            ]
+          },
+          "then": {
+            "properties": {
+              "targets": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "roster": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "selection": {
+          "const": "auto"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32
+        },
+        "max_concurrency": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "overrides": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "ordinal": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 32
+              },
+              "display_name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "tradition": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "deity": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "role": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "style": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "persona": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              }
+            },
+            "required": [
+              "ordinal"
+            ],
+            "description": "Partial overrides on an automatically selected subject, ordinal is 1-based."
+          }
+        }
+      },
+      "required": [
+        "selection",
+        "count",
+        "max_concurrency",
+        "seed",
+        "overrides"
+      ]
+    },
+    "rounds": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "const": "mixed"
+        },
+        "creative_weight": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "ritual_weight": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "max_duration_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 180
+        },
+        "max_total_rounds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "max_history_rounds_per_thread": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "mode",
+        "creative_weight",
+        "ritual_weight",
+        "max_duration_seconds",
+        "max_total_rounds",
+        "max_history_rounds_per_thread"
+      ]
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "reasoning_effort": {
+          "enum": [
+            "auto",
+            "minimal",
+            "low",
+            "medium",
+            "high",
+            "xhigh"
+          ]
+        },
+        "read_only": {
+          "const": true
+        },
+        "disable_external_tools": {
+          "const": true
+        }
+      },
+      "required": [
+        "model",
+        "reasoning_effort",
+        "read_only",
+        "disable_external_tools"
+      ]
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": [
+            "subscription",
+            "api"
+          ]
+        },
+        "subscription": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "limit_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120
+                },
+                "window_duration_minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 43200
+                },
+                "max_usage_delta_pp": {
+                  "type": "integer",
+                  "minimum": 2,
+                  "maximum": 25
+                },
+                "min_remaining_percent": {
+                  "type": "integer",
+                  "minimum": 10,
+                  "maximum": 90
+                }
+              },
+              "required": [
+                "limit_id",
+                "window_duration_minutes",
+                "max_usage_delta_pp",
+                "min_remaining_percent"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "api": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "max_estimated_usd": {
+                  "type": "string",
+                  "pattern": "^(?:0\\.(?=[0-9]*[1-9])[0-9]{1,6}|[1-9][0-9]*(?:\\.[0-9]{1,6})?)$",
+                  "description": "Decimal USD as a positive string, e.g. \"0.50\"."
+                },
+                "safety_fraction": {
+                  "type": "number",
+                  "minimum": 0.05,
+                  "maximum": 0.5
+                },
+                "pricing_catalog_version": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              "required": [
+                "max_estimated_usd",
+                "safety_fraction",
+                "pricing_catalog_version"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "max_elapsed_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7200
+        }
+      },
+      "required": [
+        "mode",
+        "subscription",
+        "api",
+        "max_elapsed_seconds"
+      ],
+      "oneOf": [
+        {
+          "properties": {
+            "mode": {
+              "const": "subscription"
+            },
+            "subscription": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "limit_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120
+                },
+                "window_duration_minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 43200
+                },
+                "max_usage_delta_pp": {
+                  "type": "integer",
+                  "minimum": 2,
+                  "maximum": 25
+                },
+                "min_remaining_percent": {
+                  "type": "integer",
+                  "minimum": 10,
+                  "maximum": 90
+                }
+              },
+              "required": [
+                "limit_id",
+                "window_duration_minutes",
+                "max_usage_delta_pp",
+                "min_remaining_percent"
+              ]
+            },
+            "api": {
+              "type": "null"
+            }
+          }
+        },
+        {
+          "properties": {
+            "mode": {
+              "const": "api"
+            },
+            "subscription": {
+              "type": "null"
+            },
+            "api": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "max_estimated_usd": {
+                  "type": "string",
+                  "pattern": "^(?:0\\.(?=[0-9]*[1-9])[0-9]{1,6}|[1-9][0-9]*(?:\\.[0-9]{1,6})?)$",
+                  "description": "Decimal USD as a positive string, e.g. \"0.50\"."
+                },
+                "safety_fraction": {
+                  "type": "number",
+                  "minimum": 0.05,
+                  "maximum": 0.5
+                },
+                "pricing_catalog_version": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              "required": [
+                "max_estimated_usd",
+                "safety_fraction",
+                "pricing_catalog_version"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "reporting": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "retain_transcripts": {
+          "type": "boolean"
+        },
+        "markdown_report": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "retain_transcripts",
+        "markdown_report"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "name",
+    "goal",
+    "scope",
+    "roster",
+    "rounds",
+    "execution",
+    "budget",
+    "reporting"
+  ]
+}

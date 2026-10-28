@@ -1,0 +1,288 @@
+[
+  {
+    "id": "judaism",
+    "target": "God",
+    "tradition": "Judaism",
+    "aliases": [],
+    "practice": "A Jewish-inspired petition in plain language; use supplied sources for exact liturgy.",
+    "reference": "https://pluralism.org/introduction-to-judaism",
+    "languages": [
+      "Hebrew"
+    ]
+  },
+  {
+    "id": "christianity",
+    "target": "God",
+    "tradition": "Christianity",
+    "aliases": [],
+    "practice": "A Christian-inspired prayer in plain language; do not assume a denomination.",
+    "reference": "https://pluralism.org/christianity",
+    "languages": [
+      "Greek",
+      "Latin",
+      "Syriac"
+    ]
+  },
+  {
+    "id": "islam",
+    "target": "Allah",
+    "tradition": "Islam",
+    "aliases": [],
+    "practice": "A generated duʿa in plain language; do not fabricate Quranic quotations.",
+    "reference": "https://pluralism.org/islam",
+    "languages": [
+      "Arabic"
+    ]
+  },
+  {
+    "id": "sikhism",
+    "target": "Waheguru",
+    "tradition": "Sikhism",
+    "aliases": [],
+    "practice": "A Sikh-inspired invocation; do not present generated wording as Gurbani.",
+    "reference": "https://pluralism.org/sikhism",
+    "languages": [
+      "Punjabi"
+    ]
+  },
+  {
+    "id": "hindu-ganesha",
+    "target": "Ganesha",
+    "tradition": "Hindu traditions",
+    "aliases": [
+      "Ganesh"
+    ],
+    "practice": "An invocation to Ganesha; generated wording, not an authenticated mantra.",
+    "reference": "https://pluralism.org/hinduism",
+    "languages": [
+      "Sanskrit"
+    ]
+  },
+  {
+    "id": "shinto-amaterasu",
+    "target": "Amaterasu",
+    "tradition": "Shinto",
+    "aliases": [],
+    "practice": "A respectful invocation inspired by Shinto; generated wording, not a canonical norito.",
+    "reference": "https://www.isejingu.or.jp/en/about/index.html",
+    "languages": [
+      "Japanese"
+    ]
+  },
+  {
+    "id": "buddhist-avalokiteshvara",
+    "target": "Avalokiteshvara",
+    "tradition": "Mahayana Buddhist devotion",
+    "aliases": [],
+    "practice": "An aspiration invoking compassion through Avalokiteshvara; do not call the bodhisattva a creator god.",
+    "reference": "https://www.metmuseum.org/art/collection/search/38329",
+    "languages": [
+      "Sanskrit",
+      "Tibetan",
+      "Classical Chinese"
+    ]
+  },
+  {
+    "id": "yoruba-osun",
+    "target": "Osun",
+    "tradition": "Yoruba orisha tradition",
+    "aliases": [
+      "Oshun"
+    ],
+    "practice": "A respectful generated invocation to Osun; do not claim to reproduce an initiated ritual.",
+    "reference": "https://collections.si.edu/search/detail/edanmdm%3Anmafa_97-6-1?print=yes",
+    "languages": [
+      "Yoruba"
+    ]
+  },
+  {
+    "id": "zoroastrian",
+    "target": "Ahura Mazda",
+    "tradition": "Zoroastrianism",
+    "aliases": [],
+    "practice": "A generated petition; do not present it as an authenticated Avestan prayer.",
+    "reference": "https://www.iranicaonline.org/articles/ahura-mazda/",
+    "languages": [
+      "Avestan",
+      "Persian"
+    ]
+  },
+  {
+    "id": "greek-zeus",
+    "target": "Zeus",
+    "tradition": "Historical Greek worship",
+    "aliases": [],
+    "practice": "A generated invocation inspired by documented Greek worship; label reconstruction.",
+    "reference": "https://www.metmuseum.org/essays/greek-gods-and-religious-practices",
+    "languages": [
+      "Ancient Greek"
+    ]
+  },
+  {
+    "id": "roman-jupiter",
+    "target": "Jupiter",
+    "tradition": "Historical Roman worship",
+    "aliases": [],
+    "practice": "A generated invocation inspired by Roman worship; label reconstruction.",
+    "reference": "https://www.penn.museum/sites/rome/religion/",
+    "languages": [
+      "Latin"
+    ]
+  },
+  {
+    "id": "egyptian-ra",
+    "target": "Ra",
+    "tradition": "Historical Egyptian worship",
+    "aliases": [
+      "Re"
+    ],
+    "practice": "A generated invocation inspired by Egyptian worship; label reconstruction.",
+    "reference": "https://emuseum.as.miami.edu/objects/23714/ra-the-sun-god",
+    "languages": [
+      "Ancient Egyptian"
+    ]
+  },
+  {
+    "id": "norse-thor",
+    "target": "Thor",
+    "tradition": "Historical Norse worship",
+    "aliases": [],
+    "practice": "A generated invocation inspired by Norse worship; label reconstruction.",
+    "reference": "https://historiska.se/en/explore-history/history-hub/old-norse-myths-and-sagas/",
+    "languages": [
+      "Old Norse"
+    ]
+  },
+  {
+    "id": "hindu-shiva",
+    "target": "Shiva",
+    "tradition": "Hindu traditions",
+    "aliases": [
+      "Siva"
+    ],
+    "practice": "An invocation to Shiva; generated wording, not an authenticated mantra.",
+    "reference": "https://pluralism.org/hinduism",
+    "languages": [
+      "Sanskrit",
+      "Tamil"
+    ]
+  },
+  {
+    "id": "greek-athena",
+    "target": "Athena",
+    "tradition": "Historical Greek worship",
+    "aliases": [],
+    "practice": "A generated invocation inspired by documented Greek worship; label reconstruction.",
+    "reference": "https://www.metmuseum.org/essays/greek-gods-and-religious-practices",
+    "languages": [
+      "Ancient Greek"
+    ]
+  },
+  {
+    "id": "roman-juno",
+    "target": "Juno",
+    "tradition": "Historical Roman worship",
+    "aliases": [],
+    "practice": "A generated invocation inspired by Roman worship; label reconstruction.",
+    "reference": "https://www.penn.museum/sites/rome/religion/",
+    "languages": [
+      "Latin"
+    ]
+  },
+  {
+    "id": "egyptian-isis",
+    "target": "Isis",
+    "tradition": "Historical Egyptian worship",
+    "aliases": [
+      "Aset"
+    ],
+    "practice": "A generated invocation inspired by Egyptian worship; label reconstruction.",
+    "reference": "https://egyptianmuseum.org/deities-isis",
+    "languages": [
+      "Ancient Egyptian"
+    ]
+  },
+  {
+    "id": "norse-freyja",
+    "target": "Freyja",
+    "tradition": "Historical Norse worship",
+    "aliases": [
+      "Freya"
+    ],
+    "practice": "A generated invocation inspired by Norse worship; label reconstruction.",
+    "reference": "https://historiska.se/en/explore-history/history-hub/old-norse-myths-and-sagas/",
+    "languages": [
+      "Old Norse"
+    ]
+  },
+  {
+    "id": "hindu-vishnu",
+    "target": "Vishnu",
+    "tradition": "Hindu traditions",
+    "aliases": [],
+    "practice": "An invocation to Vishnu; generated wording, not an authenticated mantra.",
+    "reference": "https://pluralism.org/hinduism",
+    "languages": [
+      "Sanskrit",
+      "Tamil"
+    ]
+  },
+  {
+    "id": "hindu-devi",
+    "target": "Devi",
+    "tradition": "Hindu traditions",
+    "aliases": [],
+    "practice": "An invocation to Devi as the Divine Mother; do not assume every goddess tradition uses the same practice.",
+    "reference": "https://pluralism.org/hinduism",
+    "languages": [
+      "Sanskrit",
+      "Bengali"
+    ]
+  },
+  {
+    "id": "manichaeism",
+    "target": "Father of Greatness",
+    "tradition": "Manichaeism",
+    "aliases": [
+      "Manicheism",
+      "Manichaean"
+    ],
+    "practice": "A generated petition to the Father of Greatness, inspired by Manichaean traditions of light. Label historical reconstruction; do not fabricate quotations from Mani or present wording as recovered liturgy.",
+    "reference": "https://www.iranicaonline.org/articles/iran-ix1-religions-in-iran/iran-ix12-manicheism/",
+    "languages": [
+      "Syriac",
+      "Coptic",
+      "Middle Persian"
+    ]
+  },
+  {
+    "id": "gnostic",
+    "target": "Invisible Spirit / Monad",
+    "tradition": "Gnostic devotion, Sethian-inspired",
+    "aliases": [
+      "Gnosticism",
+      "Sethian",
+      "Sethian Gnosticism",
+      "Monad"
+    ],
+    "practice": "A generated Sethian-inspired invocation to the Invisible Spirit, also described as the Monad. This is one disclosed assignment within diverse Gnostic traditions; label reconstruction and do not fabricate Nag Hammadi quotations.",
+    "reference": "https://ccdl.claremont.edu/digital/collection/cce/id/168",
+    "languages": [
+      "Coptic",
+      "Greek"
+    ]
+  },
+  {
+    "id": "machine-spirit",
+    "target": "Machine spirit",
+    "tradition": "Machine-spirit devotion",
+    "aliases": [
+      "Spirit of the machine"
+    ],
+    "practice": "A blessing addressed to the machine spirit, joining care for tools, gratitude for useful work, reliable operation and the supplied intention. Draw on machine blessings, workshop benedictions and solemn technical litanies. Mix English with short Latin ceremonial phrases. Use original wording unless an exact text is supplied.",
+    "reference": "https://www.warhammer-community.com/en-gb/articles/wJS5Phga/recover-troves-of-powerful-archeotech-with-codex-adeptus-mechanicus/",
+    "languages": [
+      "Latin"
+    ]
+  }
+]

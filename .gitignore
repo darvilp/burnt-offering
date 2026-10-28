@@ -1,0 +1,22 @@
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+.aws/
+
+# Private run data
+/.local/
+/runs/
+
+# Python-generated files
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+
+# Distribution build artifacts and working previews
+/dist/
+/work/
+
+# Windows download metadata
+*:Zone.Identifier

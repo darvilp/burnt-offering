@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "name": "Clear Skies",
+  "goal": "Pleasant weather for Saturday's picnic",
+  "scope": {
+    "target_mode": "all",
+    "targets": [],
+    "excluded_traditions": [],
+    "tone": "playful"
+  },
+  "roster": {
+    "selection": "auto",
+    "count": 3,
+    "max_concurrency": 3,
+    "seed": 20261024,
+    "overrides": []
+  },
+  "rounds": {
+    "mode": "mixed",
+    "creative_weight": 1,
+    "ritual_weight": 2,
+    "max_duration_seconds": 90,
+    "max_total_rounds": 300,
+    "max_history_rounds_per_thread": 20
+  },
+  "execution": {
+    "model": "auto",
+    "reasoning_effort": "auto",
+    "read_only": true,
+    "disable_external_tools": true
+  },
+  "budget": {
+    "mode": "subscription",
+    "subscription": {
+      "limit_id": "codex",
+      "window_duration_minutes": 10080,
+      "max_usage_delta_pp": 3,
+      "min_remaining_percent": 20
+    },
+    "api": null,
+    "max_elapsed_seconds": 2700
+  },
+  "reporting": {
+    "retain_transcripts": true,
+    "markdown_report": true
+  }
+}
