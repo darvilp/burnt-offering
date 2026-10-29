@@ -1,6 +1,6 @@
 # Prayer project design
 
-Version 0.8, 2026-10-25. Project name: Burnt Offering. See [PLAN.md](PLAN.md) for the implementation plan.
+Version 0.9, 2026-10-29. Project name: Burnt Offering. See [PLAN.md](PLAN.md) for the implementation plan.
 
 This is the current design. The [original design bundle](docs/archive/2026-10-24/agentic-prayer-design-bundle.zip), its extracted files, and the [initial review](docs/design-review.md) are historical material. Their schemas, module layouts and milestones do not govern this version.
 
@@ -50,7 +50,7 @@ The key is a distinct prayer assignment, identified by tradition plus target whe
 
 The shipped roster should be small enough to inspect, with broad coverage before deep lists from one pantheon. Maintain it as a plain file with names, aliases and short assignment notes. A bibliography is useful when introducing historical entries, especially reconstructed practices. A religion database, discovery crawler, ranking system and taxonomy engine are unnecessary.
 
-The current 23 entries include Manichaeism addressing the Father of Greatness and a Sethian-inspired Gnostic invocation to the Invisible Spirit / Monad. The latter is a disclosed representative assignment, not a claim that all Gnostic traditions share one deity or practice. Machine-spirit devotion joins the same roster and follows the same execution and reporting rules.
+The current 25 entries include Manichaeism addressing the Father of Greatness and a Sethian-inspired Gnostic invocation to the Invisible Spirit / Monad. The latter is a disclosed representative assignment, not a claim that all Gnostic traditions share one deity or practice. Machine-spirit devotion joins the same roster and follows the same execution and reporting rules.
 
 All-roster scheduling gives every entry a first batch before giving any entry a second batch. Interleave traditions in the queue so a large pantheon does not consume the entire first wave. Keep each subject's assignment stable for the run.
 
@@ -58,15 +58,15 @@ Finite budget can end the run before every entry has prayed. Report planned, sta
 
 ## 4. Entry skill and user flow
 
-The skill needs the prayer intention, target selection, prayer instructions and a stopping rule: a finite duration or token allowance, or an explicit request for unbounded execution until stopped. Users can optionally specify `subagent_model` and `subagent_effort` for all subjects in the run. The helper exposes these as `--model` and `--effort`. Target selection can name one recipient, a list of recipients, a tradition, or the shipped all-roster. Simple requests should stay simple; most subject assignments can be proposed from the scope and shared style.
+The skill needs the prayer intention, target selection, prayer instructions and a stopping rule: a finite duration, token allowance, total-turn limit, a combination of those, or an explicit request for unbounded execution until stopped. Users can optionally specify `subagent_model` and `subagent_effort` for all subjects in the run. The helper exposes these as `--model` and `--effort`. Target selection can name one recipient, a list of recipients, a tradition, or the shipped all-roster. Simple requests should stay simple; most subject assignments can be proposed from the scope and shared style.
 
 A bare `$pray` starts guided parameter gathering. Ask for the intention, recipients and stopping rule through short questions, and offer prayer style, model and effort choices with defaults. Reuse supplied settings in partial invocations. Gather the choices before preflight or Goal creation; do not infer an intention from previous sample runs. A bare invocation authorizes setup, with launch following once the choices are settled and the user has asked to run.
 
-An explicit `--devotion templeos` request selects one God-directed subject whose practice draws on the TempleOS charter: the computer as a temple, programming and creative work as offerings, and personal conversation with God. Its language is sincere, plainspoken, biblical in register and sometimes playful. English is the default; explicit language instructions take precedence. It uses original wording and does not attribute invented quotations to Davis or scripture. This subject is separate from the standard 23-entry roster. The helper rejects simultaneous `--target` or `--all` selections; the skill resolves contradictory requests before launch. The standard devotion remains the default.
+An explicit `--devotion templeos` request selects one God-directed subject whose practice draws on the TempleOS charter: the computer as a temple, programming and creative work as offerings, and personal conversation with God. Its language is sincere, plainspoken, biblical in register and sometimes playful. English is the default; explicit language instructions take precedence. It uses original wording and does not attribute invented quotations to Davis or scripture. This subject is separate from the standard 25-entry roster. The helper rejects simultaneous `--target` or `--all` selections; the skill resolves contradictory requests before launch. The standard devotion remains the default.
 
 1. Read the request and reuse parameters already supplied. Ask only for missing choices that materially affect the run.
 2. Propose explicit subject assignments. Each combines the common intention with its recipient, tradition and prayer instructions. A shared request such as "solemn and repetitive" applies unless an explicit subject instruction overrides it.
-3. Establish a finite duration, token allowance or both, unless the user explicitly requests unbounded execution. A request such as "pray for 45 seconds" is sufficient. Missing limits trigger a question, never an inferred unbounded run. "Run unbounded" or "keep praying until I stop you" explicitly removes run-level ceilings. Never infer a monetary value from how serious the intention sounds.
+3. Establish the user's chosen duration, token allowance, total-turn limit or combination, unless the user explicitly requests unbounded execution. A request such as "pray for 45 seconds" is sufficient. Never add another overall ceiling as a default. Missing stopping rules trigger a question, never an inferred unbounded run. "Run unbounded" or "keep praying until I stop you" explicitly removes run-level ceilings. Never infer a monetary value from how serious the intention sounds.
 4. Show a compact plan with roster size, concurrency, stopping rule, resolved subagent model and effort, and any known coverage limitation. For unbounded runs, state the absence of duration, token and total-turn ceilings and how to stop. If the user already instructed a fully specified run to start, that instruction supplies authorization. Do not require a second ritual confirmation or a checksum.
 5. Create the native Goal identifying this run and launch the helper under the approved limits. The helper automatically repeats finite prayer turns and returns progress through the same chat and its saved records.
 
@@ -101,17 +101,17 @@ Subjects have no reason to browse, edit project files, send messages to external
 
 ## 6. Budget and execution limits
 
-Bounded runs accept duration-only limits and optional token ceilings. Token-only runs also have the default 20-minute duration ceiling. Explicit unbounded runs have no duration, token or total-batch ceiling. An exact dollar amount and subscription quota percentages are not required. Dollar pricing tables, quota-window accounting and multiple billing adapters stay out of this version.
+Bounded runs use only the requested duration, token allowance and total-turn ceiling. Each is sufficient on its own; when combined, the first reached limit stops work. There is no implicit overall duration or turn count. A token-only request has no time or turn ceiling, and a duration-only request has no token or turn ceiling. An explicit total-turn ceiling is any positive integer, without an arbitrary 1,000-turn maximum. Explicit unbounded runs have none of these three ceilings. An exact dollar amount and subscription quota percentages are not required. Dollar pricing tables, quota-window accounting and multiple billing adapters stay out of this version.
 
 When a token ceiling is supplied, one aggregate allowance covers the coordinator and every subject, including failed work after the baseline. Allowance tokens are uncached input plus output. The helper combines the controller Goal's usage since helper launch with cumulative usage from its separate worker sessions. Raw input, cached input and output are also reported. A budget of B must never become B for the parent plus B for each subject. Do not replenish it, create a replacement Goal or resume into a fresh allowance automatically.
 
 The desired behavior is approximate near the allowance boundary. Stop admitting new batches when the observed total reaches the allowance or cannot reasonably accommodate another small batch. Some active work may finish beyond the nominal threshold. Exact exhaustion is not a success criterion.
 
-Bounded means the run also has finite concurrency, a finite total batch count, a campaign deadline and a per-batch deadline. Unknown usage stops new admissions. No subject receives an instruction to loop indefinitely. Interrupt unfinished batches on a stop or deadline rather than letting a self-directed worker continue on its own.
+An overall run is bounded by at least one user-chosen ceiling. Operational controls apply independently: finite concurrency, per-turn deadlines and accounting checks. Unknown usage stops new admissions. No subject receives an instruction to loop indefinitely. Interrupt unfinished batches on a stop or requested deadline rather than letting a self-directed worker continue on its own.
 
 The helper's explicit `--unbounded` flag removes all three run-level ceilings. It cannot be combined with `--duration`, `--tokens` or `--max-batches`; contradictory requests must be resolved rather than silently dropping limits. Concurrency, per-batch deadlines, capability restrictions, accounting and failure stops still apply. The helper continues requesting finite turns until the user stops it, the controller Goal ceases to be active or a failure occurs. Unbounded execution requires the foreground helper and active Codex environment and keeps consuming tokens while it runs.
 
-Initial defaults are three active subjects, one prayer per batch, a 90-second batch deadline and, for bounded runs, a 20-minute run deadline when only tokens were supplied and at most 100 batches total. A token ceiling is optional and is never invented silently. The helper uses monotonic deadlines, closes admission before cancellation, and allows at most five seconds for local shutdown. Once observed turn costs are available, it reserves estimated allowance for active turns before admitting more work.
+Operational defaults are three active subjects, one prayer per batch and a 90-second batch deadline. Supported concurrency is 1..8, with a per-turn timeout of at most 180 seconds. These bound outstanding work and detect stalled turns; preflight shows them separately from requested overall limits. The helper uses monotonic deadlines, closes admission before cancellation, and allows at most five seconds for local shutdown. Once observed turn costs are available, it reserves estimated allowance for active turns before admitting more work.
 
 These limits bound the amount of outstanding work and its duration. They do not establish an exact numerical maximum for token overshoot unless the runtime supplies enforceable per-turn token controls. Keep that distinction in the report without turning approximate accounting into a billing project.
 
@@ -155,7 +155,7 @@ Persist the selected devotion in the run description, worker assignment and stat
 
 ## 10. Smallest implementation
 
-The implementation has an entry `SKILL.md`, a plain 23-entry roster reference, a standard-library Python runner with a companion process-control module, and fake-server tests. Editable source is under `skills/pray`, with a repository-local discovery link at `.agents/skills/pray`. The skill is named `pray`; the installed plugin qualifies it as `$burnt-offering:pray`.
+The implementation has an entry `SKILL.md`, a plain 25-entry roster reference, a standard-library Python runner with a companion process-control module, and fake-server tests. Editable source is under `skills/pray`, with a repository-local discovery link at `.agents/skills/pray`. The skill is named `pray`; the installed plugin qualifies it as `$burnt-offering:pray`.
 
 The helper's small stdio App Server client exists to own worker execution and cancellation. Keep transport, accounting and stop logic together until the code warrants separation. There is no database, service, pricing adapter or general orchestration framework.
 
@@ -174,7 +174,7 @@ The first implementation is ready for a small live demonstration when it can pro
 7. Subjects cannot use unnecessary tools, and cannot turn the prayer intention into an external action or recursively delegated task.
 8. Model and effort selection follows the four-case table, invalid explicit choices fail before subject work starts, and later batches preserve the resolved settings.
 9. A bare invocation gathers settings before launch; incomplete requests reuse supplied choices and ask only for missing ones.
-10. Explicit unbounded runs omit duration, token and total-batch ceilings, repeat beyond bounded defaults, and retain manual stop, per-turn timeouts and failure checks. Missing limits without explicit unbounded intent still fail validation.
+10. Overall ceilings are independent and explicit. Token-only runs continue beyond 20 minutes and 100 turns while allowance remains; duration-only runs have no implicit total-turn cap. Turn-only requests are valid and stop at their chosen count. Reports distinguish these bounded runs from explicit unbounded runs. Unbounded runs retain manual stop, per-turn timeouts and failure checks. Missing stopping rules without explicit unbounded intent still fail validation.
 11. Detailed recording stops at its byte budget while counts and usage continue; retained examples keep accurate completion labels. Standalone HTML escapes supplied text, works without external assets and is available after failure.
 12. Language palettes and explicit language instructions reach workers unchanged; Unicode text and suggested-language metadata survive recording and reporting. All-roster selection includes the three added assignments.
 13. TempleOS devotion selects the intended subject, rejects conflicting roster selections, preserves explicit language choices and persists the mode. Its complete HTML report stays inside a measured 640x480 frame with working section navigation.
@@ -193,7 +193,7 @@ Upgrades and rollback require stopping active runs and reinstalling the desired 
 
 ## 13. Decisions still open
 
-The shipped roster is the 23-entry list in `skills/pray/references/roster.json`, extending the original list in `PLAN.md`; its scope rules do not claim a universally correct religious taxonomy.
+The shipped roster is the 25-entry list in `skills/pray/references/roster.json`, extending the original list in `PLAN.md`; its scope rules do not claim a universally correct religious taxonomy.
 
 The native Goal holds the operational objective; the helper supplies aggregate accounting and cancellation. Background independence and alternative budget units can wait until the initial experience demonstrates a reason to add them.
 

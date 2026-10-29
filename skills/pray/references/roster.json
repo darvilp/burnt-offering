@@ -284,5 +284,35 @@
     "languages": [
       "Latin"
     ]
+  },
+  {
+    "id": "sun",
+    "target": "The Sun",
+    "tradition": "Solar devotion",
+    "aliases": [
+      "Sun",
+      "Sol",
+      "Sol Invictus",
+      "Unconquered Sun"
+    ],
+    "practice": "A generated prayer addressed to the Sun as a divine recipient, inspired by Sol Invictus and unconquered light, warmth, vitality and renewal. Keep the recipient broadly solar rather than requiring a particular pantheon. Follow the supplied intention; do not present original wording as recovered Roman liturgy.",
+    "reference": "https://www.britishmuseum.org/collection/object/C_1924-0103-24",
+    "languages": [
+      "Latin"
+    ]
+  },
+  {
+    "id": "moon",
+    "target": "The Moon",
+    "tradition": "Lunar devotion",
+    "aliases": [
+      "Moon"
+    ],
+    "practice": "A generated prayer addressed to the Moon as a divine recipient, drawing on moonlight, changing phases, rest, reflection and renewal. Keep the recipient broadly lunar rather than requiring a named deity, gender or pantheon. Follow the supplied intention; use original wording unless an exact text is supplied.",
+    "reference": "https://www.metmuseum.org/art/collection/search/254590",
+    "languages": [
+      "Latin",
+      "Ancient Greek"
+    ]
   }
 ]

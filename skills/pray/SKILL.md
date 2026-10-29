@@ -28,7 +28,7 @@ the missing choices through short questions, grouping related settings when usef
 
 - Intention: what should the subjects pray for?
 - Recipients: an open nonsectarian invocation, named recipients, or the starter roster?
-- Stopping rule: a duration, a token allowance, both, or explicitly unbounded until stopped?
+- Stopping rule: a duration, token allowance, total-turn limit, a combination, or explicitly unbounded until stopped?
 - Optional settings: prayer style and language, worker model and effort. Offer short invocations
   and inheritance of the controller's model and effort as defaults the user can accept.
 
@@ -41,7 +41,7 @@ authorizes setup; launch once the choices are settled and the user has asked to 
 
 Reuse the intention, recipient choices, practice and limits the user supplied.
 One or more named recipients or `--all` select the roster. The latter means every
-entry in [the 23-entry starter roster](references/roster.json), not every known
+entry in [the 25-entry starter roster](references/roster.json), not every known
 religion or deity. Show its scope and any likely partial coverage before starting.
 Use tradition-specific roster IDs for ambiguous names such as God. Custom targets,
 including an open nonsectarian invocation, are supported.
@@ -72,13 +72,16 @@ This mode also selects the fixed 640x480 HTML report. Long content scrolls insid
 the frame, with native section links and expandable examples. Preserve the saved
 devotion when reporting or regenerating HTML; it does not change run limits.
 
-A finite `--duration` in seconds is sufficient. An optional `--tokens` ceiling
-counts uncached input plus output across the controller and workers. Token-only
-requests have a 20-minute duration ceiling. Ask for a concrete limit if neither
-was supplied, unless the user explicitly requested an unbounded run. For an
-explicit request such as "run unbounded" or "keep praying until I stop you", use
-`--unbounded`. It removes the duration, token and total-turn ceilings, including
-the usual 100-turn default. Do not combine it with `--duration`, `--tokens` or
+A finite `--duration` in seconds, `--tokens` allowance or `--max-batches`
+total-turn ceiling is sufficient on its own. They can also be combined; the
+first reached limit stops the run. The token allowance counts uncached input
+plus output across the controller and workers. Apply only the overall limits
+the user chose. Do not add a duration to a token-only request or invent a
+total-turn cap for a duration-only or token-only request. Ask for a stopping
+rule if none was supplied, unless the user explicitly requested an unbounded run.
+For an explicit request such as "run unbounded" or "keep praying until I stop you", use
+`--unbounded`. It has no duration, token or total-turn ceiling.
+Do not combine it with `--duration`, `--tokens` or
 `--max-batches`. Omitted settings never imply unbounded execution; "no token
 ceiling" alongside a duration is still a duration-bounded run. If instructions
 conflict, resolve the intended stopping rule before launching.
@@ -103,6 +106,10 @@ Show the resulting compact plan. A fully specified instruction to start supplies
 authorization; do not ask for it again. Explain that the timing baseline begins
 with the first prayer turn and the accounting baseline begins with helper launch.
 Setup and later narration in the main chat are outside the recorded allowance.
+Show operational settings separately from the user's overall limits: defaults
+are three simultaneous turns and a 90-second per-turn timeout, with supported
+ranges of 1..8 active turns and up to 180 seconds per turn. A turn timeout ends the
+run as a failure; it is not an overall duration added to the user's request.
 
 ## Execute once and report
 

@@ -2,8 +2,8 @@
 
 This records local validation and the initial hosted CI findings. The repository
 is at [darvilp/burnt-offering](https://github.com/darvilp/burnt-offering).
-Publication gates remain open. The 49-test Linux and native Windows suites
-passed locally on 2026-10-28 after the timer-classification correction below.
+Publication gates remain open. The 53-test Linux and native Windows suites
+passed locally on 2026-10-29 after removing implicit overall run limits.
 Record hosted CI and fresh-install results against the exact pushed commit
 before tagging a beta.
 
@@ -11,8 +11,8 @@ before tagging a beta.
 
 | Check | Evidence / status |
 |---|---|
-| Linux / WSL, Python 3.12.3 | 49 automated tests passed, including process-tree cleanup and relocated-package execution. |
-| Native Windows, Python 3.12.10 | All 49 automated tests passed, including actual process-tree cleanup and relocated-package execution. |
+| Linux / WSL, Python 3.12.3 | 53 automated tests passed, including process-tree cleanup, relocated-package execution and independent explicit run limits. |
+| Native Windows, Python 3.12.10 | All 53 automated tests passed, including actual process-tree cleanup, relocated-package execution and independent explicit run limits. |
 | Codex manifest/catalog | Codex 0.164.0 parsed the portable plugin and discovered `burnt-offering:pray`. |
 | Plugin lifecycle on Linux | Real install, discovery, removal and reinstall passed on Codex 0.164.0 without model credentials; private fixture records retained. |
 | Plugin lifecycle on native Windows | The same no-credential lifecycle passed on Codex 0.146.0. This does not establish signed-in runtime support on that version. |
@@ -33,6 +33,14 @@ The runner stopped without replaying work but reported `dispatch_uncertain`.
 Timeout classification now accounts for the clock's reported resolution; normal
 admission checks still use the exact deadline. A regression test covers early
 timer classification, ordinary admission and user-stop precedence.
+
+The explicit-limit correction removes the default 20-minute deadline and
+100-turn ceiling, accepts a positive total-turn limit by itself, and removes the
+former 1,000-turn maximum. A fake-worker token-only test completed 105 prayers
+with its elapsed-time baseline advanced by an hour, then stopped at its token
+allowance. HTML and Markdown reports correctly describe token-only and turn-only
+runs as bounded. These checks make no model requests. The revised policy still
+needs hosted CI on the eventual pushed commit; no new paid live attempt was run.
 
 ## Local runtime observations
 

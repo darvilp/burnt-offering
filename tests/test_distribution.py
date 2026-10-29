@@ -64,7 +64,7 @@ from pathlib import Path
 helper, fake, records = map(Path, sys.argv[1:])
 sys.path.insert(0, str(helper.parent))
 module = runpy.run_path(str(helper), run_name="packaged_pray")
-assert len(module["load_subjects"](use_all=True)) == 23
+assert len(module["load_subjects"](use_all=True)) == 25
 async def main():
     for devotion in ("standard", "templeos"):
         run_id = ("a" if devotion == "standard" else "b") * 32

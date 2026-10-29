@@ -46,7 +46,7 @@ repeatable installation test pinned to a commit, use the
 ## Choose the run
 
 - **Recipients.** Use an open invocation, name recipients, or request the
-  [23-entry starter roster](skills/pray/references/roster.json). Each selected
+  [25-entry starter roster](skills/pray/references/roster.json). Each selected
   entry gets its own agent. "All" selects that roster; it is not a claim to
   cover every religion or deity. Short runs may stop before every agent prays.
 - **Practice and language.** Ask for original prayer, recitation or repetition.
@@ -54,11 +54,11 @@ repeatable installation test pinned to a commit, use the
   tradition's suggested languages. Your explicit language instructions take
   precedence. The output is model-generated and is not independently verified
   liturgy or translation.
-- **Limits.** Choose a duration, an optional token allowance, or both. Bounded
-  runs also default to 100 total turns. Token-only runs also have a 20-minute
-  duration ceiling. Explicitly asking to run unbounded until stopped removes
-  run-level ceilings and keeps consuming usage until you stop it or a failure
-  ends it. Missing settings never imply an unbounded run.
+- **Limits.** Choose a duration, a token allowance, a total number of turns, or
+  a combination. Only the overall limits you choose apply; the first reached
+  stops the run. There is no default duration or total-turn cap. Explicitly
+  asking to run unbounded until stopped keeps consuming usage until you stop it
+  or a failure ends it. Missing settings never imply an unbounded run.
 - **Model and effort.** Agents inherit the current chat's model and effort unless
   you override them. Choosing only a model uses that model's default effort.
 

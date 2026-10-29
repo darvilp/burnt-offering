@@ -415,11 +415,20 @@ def recording_note(status):
             "Aggregate counts and usage continue after the cap; saved examples are not a complete transcript.")
 
 
+def describe_limits(limits):
+    return "; ".join((
+        f"{limits['duration_seconds']} seconds" if limits["duration_seconds"] is not None else "No duration ceiling",
+        f"{limits['tokens']:,} allowance tokens" if limits["tokens"] is not None else "no token ceiling",
+        f"{limits['batches']:,} turns maximum" if limits["batches"] is not None else "no turn ceiling"))
+
+
 def render_report(status, events):
+    limits = status["limits"]
+    mode = "unbounded" if all(limits[key] is None for key in ("duration_seconds", "tokens", "batches")) else "bounded"
     lines = ["# Prayer activity", "", status["intention"], "",
              f"State: {status['state']}. Stop reason: {status.get('stop_reason') or 'still running'}.",
              f"Devotion: {status.get('devotion', 'standard')}.",
-             "Run mode: " + ("unbounded" if status["limits"]["duration_seconds"] is None else "bounded") + ".",
+             f"Run mode: {mode}.", f"Limits: {describe_limits(limits)}.",
              f"Worker model: {status['resolved']['model']}; effort: {status['resolved']['effort']}.",
              f"Elapsed: {status['elapsed_seconds']:.2f} seconds. Completed prayers: {status['completed_prayers']}.",
              f"Prayer window before admission closed: {status['prayer_seconds']:.2f} seconds.",
@@ -464,11 +473,8 @@ def render_html_report(status, events):
     limits, usage = status["limits"], status["usage"]
     devotion = status.get("devotion", "standard")
     templeos = devotion == "templeos"
-    mode = "unbounded" if limits["duration_seconds"] is None else "bounded"
-    limit_text = ("No duration, token or total-turn ceiling" if mode == "unbounded" else
-                  f"{limits['duration_seconds']} seconds; " +
-                  (f"{limits['tokens']:,} allowance tokens; " if limits["tokens"] is not None else "no token ceiling; ") +
-                  f"{limits['batches']} turns maximum")
+    mode = "unbounded" if all(limits[key] is None for key in ("duration_seconds", "tokens", "batches")) else "bounded"
+    limit_text = describe_limits(limits)
     summary = table(("Run setting", "Value"), (
         ("Run ID", status["run_id"]), ("State", status["state"]),
         ("Stop reason", status.get("stop_reason") or "still running"), ("Run mode", mode),
@@ -888,16 +894,17 @@ def build_spec(args):
         subjects = load_subjects(args.target, args.all)
     if args.unbounded and any(value is not None for value in (args.duration, args.tokens, args.max_batches)):
         raise PrayerError("--unbounded cannot be combined with --duration, --tokens or --max-batches")
-    if not args.unbounded and args.duration is None and args.tokens is None:
-        raise PrayerError("Supply --duration, --tokens, or explicitly --unbounded")
-    duration = None if args.unbounded else (args.duration if args.duration is not None else 1200)
-    batches = None if args.unbounded else (args.max_batches if args.max_batches is not None else 100)
+    if not args.unbounded and all(value is None for value in (args.duration, args.tokens, args.max_batches)):
+        raise PrayerError("Supply --duration, --tokens, --max-batches, or explicitly --unbounded")
+    duration, batches = args.duration, args.max_batches
     if duration is not None and (not math.isfinite(duration) or duration <= 0):
         raise PrayerError("Duration must be finite and positive")
     if args.tokens is not None and not 0 < args.tokens < 2**63:
         raise PrayerError("Token allowance must be a positive 64-bit integer")
-    if not 1 <= args.concurrency <= 8 or (batches is not None and not 1 <= batches <= 1000):
-        raise PrayerError("Concurrency must be 1..8 and batch ceiling 1..1000")
+    if not 1 <= args.concurrency <= 8:
+        raise PrayerError("Concurrency must be 1..8")
+    if batches is not None and batches <= 0:
+        raise PrayerError("Total-turn ceiling must be positive")
     if not math.isfinite(args.batch_timeout) or not 0 < args.batch_timeout <= 180:
         raise PrayerError("Batch timeout must be positive and at most 180 seconds")
     if not args.intention.strip() or len(args.intention) > 1000 or len(args.instructions) > 4000:
@@ -992,7 +999,7 @@ def parser():
         command.add_argument("--controller-thread", default=os.environ.get("CODEX_THREAD_ID"))
         command.add_argument("--run-id", required=name == "run")
         command.add_argument("--concurrency", type=int, default=3)
-        command.add_argument("--max-batches", type=int, help="Total-turn ceiling, default 100 for bounded runs")
+        command.add_argument("--max-batches", type=int, help="Optional total-turn ceiling; no default ceiling")
         command.add_argument("--batch-timeout", type=float, default=90)
     for name in ("status", "stop", "report"):
         command = sub.add_parser(name)

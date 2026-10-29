@@ -4,6 +4,8 @@ Approved implementation plan, 2026-10-25.
 
 This records the original bounded implementation. Extensions below update the
 stopping and assignment policies in [DESIGN.md](DESIGN.md).
+The original implicit duration and turn ceilings were implementation defaults;
+the [explicit-limit correction](#explicit-limit-correction) supersedes them.
 
 ## Outcome
 
@@ -186,3 +188,32 @@ The deliverable is a local candidate and an evidence-based readiness record.
 GitHub repository creation, pushing, tagging and prerelease publication require
 a later publishing request. See [release readiness](docs/release-readiness.md)
 and [the release procedure](docs/RELEASING.md) for current gates and instructions.
+
+## Explicit-limit correction
+
+Behavior review, 2026-10-29. The original implementation added a 20-minute
+duration to token-only requests and a 100-turn ceiling to all finite runs.
+Those were implementation defaults, not independently requested stopping rules.
+Remove both. Retain only the user's duration, token allowance and total-turn
+ceiling; each can stand alone or be combined. Missing stopping rules still
+require guided setup, unless the user explicitly requests an unbounded run.
+
+Accept any positive explicit total-turn ceiling, without the former 1,000-turn
+maximum. Derive report mode from all three ceilings, so token-only and turn-only
+runs remain labeled bounded even though they have no duration. Preserve older
+saved limits when regenerating reports; do not rewrite run records.
+
+Keep concurrency and per-turn timeouts as disclosed operational settings,
+accounting/failure stops, manual cancellation and the requested detail-recording
+cap. None of these adds an overall duration or turn count. Verify continuation
+beyond the removed limits with fake workers and an advanced clock baseline;
+verify stopping at an explicit token or turn allowance and truthful offline
+reports. No paid live run is needed for this policy correction.
+
+## Solar and lunar roster extension
+
+Add separate generic Sun and Moon recipients, bringing the roster to 25 entries.
+The Sun draws inspiration from Sol Invictus; the Moon uses a broad lunar
+assignment without fixing a named deity or gender. Keep them distinct from
+existing tradition-specific recipients. Both use the existing language,
+assignment and reporting flow, and participate in all-roster runs.

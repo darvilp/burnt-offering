@@ -50,13 +50,22 @@ class ConfigurationTests(unittest.TestCase):
 
     def test_finite_limits_and_duration_only(self):
         self.assertIsNone(make_spec()["limits"]["tokens"])
-        self.assertEqual(make_spec()["limits"]["batches"], 100)
-        self.assertEqual(make_spec(duration=None, tokens=1000)["limits"]["duration_seconds"], 1200)
+        self.assertIsNone(make_spec()["limits"]["batches"])
+        token_only = make_spec(duration=None, tokens=1000)["limits"]
+        self.assertIsNone(token_only["duration_seconds"])
+        self.assertIsNone(token_only["batches"])
+        self.assertEqual(token_only["tokens"], 1000)
         for changes in ({"duration": None}, {"duration": float("inf")}, {"duration": float("nan")},
                         {"duration": -1}, {"tokens": -1}, {"concurrency": 0}, {"batch_timeout": float("inf")},
                         {"run_id": "../escape"}, {"max_batches": 0}, {"intention": ""}):
             with self.subTest(changes=changes), self.assertRaises(pray.PrayerError):
                 make_spec(**changes)
+
+    def test_explicit_turn_limit_is_sufficient_and_has_no_arbitrary_upper_cap(self):
+        limits = make_spec(duration=None, max_batches=1001)["limits"]
+        self.assertIsNone(limits["duration_seconds"])
+        self.assertIsNone(limits["tokens"])
+        self.assertEqual(limits["batches"], 1001)
 
     def test_explicit_unbounded_mode_removes_run_ceilings(self):
         args = pray.parser().parse_args([
@@ -89,18 +98,23 @@ class ConfigurationTests(unittest.TestCase):
 
     def test_roster_and_ambiguity(self):
         roster = pray.load_subjects(use_all=True)
-        self.assertEqual(len(roster), 23)
-        self.assertEqual(len({entry["id"] for entry in roster}), 23)
+        self.assertEqual(len(roster), 25)
+        self.assertEqual(len({entry["id"] for entry in roster}), 25)
         self.assertTrue(all(entry.get("reference", "").startswith("https://") for entry in roster))
         self.assertTrue(all(entry.get("languages") and all(isinstance(language, str) and language.strip()
                             for language in entry["languages"]) for entry in roster))
         self.assertEqual(pray.load_subjects(["Ganesh"])[0]["id"], "hindu-ganesha")
         self.assertEqual(pray.load_subjects(["christianity"])[0]["tradition"], "Christianity")
         for target, expected_id in (("Manichaeism", "manichaeism"), ("Gnosticism", "gnostic"),
-                                    ("machine spirit", "machine-spirit")):
+                                    ("machine spirit", "machine-spirit"),
+                                    ("The Sun", "sun"), ("Sun", "sun"), ("Sol", "sun"),
+                                    ("Sol Invictus", "sun"), ("Unconquered Sun", "sun"),
+                                    ("The Moon", "moon"), ("Moon", "moon")):
             with self.subTest(target=target):
                 self.assertEqual(pray.load_subjects([target])[0]["id"], expected_id)
         self.assertEqual(pray.load_subjects(["machine-spirit"])[0]["tradition"], "Machine-spirit devotion")
+        self.assertEqual([entry["id"] for entry in pray.load_subjects(["Sun", "Moon", "Ra"])],
+                         ["sun", "moon", "egyptian-ra"])
         for targets in (["God"], ["Zeus", "greek-zeus"]):
             with self.assertRaises(pray.PrayerError): pray.load_subjects(targets)
 
@@ -312,7 +326,7 @@ class RunnerTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(assignment["languages"], ["English"])
         self.assertEqual(assignment["instructions"], "Pray only in Hebrew.")
 
-    async def test_unbounded_repeats_past_default_turn_ceiling_until_user_stop(self):
+    async def test_unbounded_repeats_past_100_turns_until_user_stop(self):
         runner = await self.runner(unbounded=True, duration=None)
 
         async def stop_after_repetition():
@@ -330,6 +344,51 @@ class RunnerTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(runner.deadline)
         self.assertEqual(status["stop_reason"], "user_stop")
         self.assertIn("Run mode: unbounded", (self.path / "report.md").read_text())
+
+    async def test_token_only_repeats_past_old_time_and_turn_caps_until_allowance(self):
+        runner = await self.runner(duration=None, tokens=10500, concurrency=1)
+        await runner.dispatch(0)
+        runner.started -= 3600
+        status = await self.perform(runner)
+        self.assertEqual(status["stop_reason"], "token_limit")
+        self.assertEqual(status["completed_prayers"], 105)
+        self.assertEqual(status["usage"]["goal_tokens"], 10500)
+        self.assertIsNone(runner.deadline)
+        self.assertGreater(status["prayer_seconds"], 1200)
+        markdown = (self.path / "report.md").read_text()
+        html = (self.path / "report.html").read_text()
+        self.assertIn("Run mode: bounded", markdown)
+        self.assertIn("<td>bounded</td>", html)
+        for report in (markdown, html):
+            self.assertIn("No duration ceiling", report)
+            self.assertIn("10,500 allowance tokens", report)
+            self.assertIn("no turn ceiling", report)
+            self.assertNotIn("None seconds", report)
+            self.assertNotIn("None turns", report)
+
+    async def test_duration_only_has_no_total_turn_ceiling(self):
+        runner = await self.runner(duration=3600)
+        runner.started = 0
+        runner.deadline = 3600
+        runner.clock = lambda: 1200
+        runner.batch_count = 1001
+        self.assertIsNone(runner.stop_reason())
+        runner.clock = lambda: 3600
+        self.assertEqual(runner.stop_reason(), "duration_limit")
+
+    async def test_turn_only_limit_stops_and_reports_bounded(self):
+        runner = await self.runner(duration=None, max_batches=3)
+        status = await self.perform(runner)
+        self.assertEqual(status["stop_reason"], "batch_limit")
+        self.assertEqual(status["started_batches"], 3)
+        self.assertEqual(status["completed_prayers"], 3)
+        self.assertIsNone(runner.deadline)
+        markdown = (self.path / "report.md").read_text()
+        html = (self.path / "report.html").read_text()
+        self.assertIn("Run mode: bounded", markdown)
+        self.assertIn("<td>bounded</td>", html)
+        for report in (markdown, html):
+            self.assertIn("No duration ceiling; no token ceiling; 3 turns maximum", report)
 
     async def test_unbounded_has_no_elapsed_time_or_total_turn_ceiling(self):
         runner = await self.runner(unbounded=True, duration=None)
