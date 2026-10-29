@@ -62,10 +62,9 @@ repeatable installation test pinned to a commit, use the
 - **Model and effort.** Agents inherit the current chat's model and effort unless
   you override them. Choosing only a model uses that model's default effort.
 
-An optional TempleOS devotion selects a God-directed assignment and a retro
-report theme. The [skill reference](skills/pray/SKILL.md) covers this mode,
-advanced settings and manual helper commands. Repository-local or standalone
-skill installations use `$pray` instead of the plugin's qualified invocation.
+The [skill reference](skills/pray/SKILL.md) covers advanced settings and manual
+helper commands. Repository-local or standalone skill installations use `$pray`
+instead of the plugin's qualified invocation.
 
 ## Usage and stopping
 
