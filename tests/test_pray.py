@@ -293,7 +293,7 @@ class RunnerTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("May there be relief", output.getvalue())
 
     async def test_automatic_repetition_without_more_model_coordination(self):
-        runner = await self.runner(max_batches=3)
+        runner = await self.runner(duration=None, max_batches=3)
         status = await self.perform(runner)
         self.assertEqual(status["completed_prayers"], 3)
         self.assertEqual(status["started_batches"], 3)
