@@ -379,7 +379,7 @@ class Usage:
 
 def read_status(path):
     value = json.loads((path / "status.json").read_text(encoding="utf-8"))
-    if value["state"] == "RUNNING" and (
+    if value["state"] in ("RUNNING", "STOPPING") and (
         not value.get("runner_start") or process_start(value["runner_pid"]) != value["runner_start"]
     ):
         value = {**value, "state": "INTERRUPTED", "stop_reason": "runner_missing",

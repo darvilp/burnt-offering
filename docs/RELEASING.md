@@ -6,15 +6,15 @@ the candidate workflow never creates a tag, pushes code or publishes a release.
 ## Candidate gates
 
 1. Update the root plugin and catalog versions together. The first version is
-   `0.1.0-beta.1`, with tag `v0.1.0-beta.1`. Select a GitHub owner/repository when
-   publication is requested; no placeholder repository is embedded in the catalog.
+   `0.1.0-beta.1`, with tag `v0.1.0-beta.1`, in `darvilp/burnt-offering`.
 2. Run the full test suite and `python3 scripts/package.py`. Verify the SHA-256
    file against the ZIP and inspect its allowlisted members.
 3. Require Linux, macOS and Windows CI to pass on Python 3.11 and 3.12, plus real
    plugin install/discovery/removal/reinstall checks using Codex `0.164.0`.
-4. Complete signed-in runtime acceptance for Linux/WSL and native Windows before
-   claiming support. macOS remains experimental until a native signed-in run is
-   independently confirmed. WSL does not establish Windows behavior.
+4. Complete signed-in runtime acceptance for Linux/WSL before publishing this
+   beta. Native Windows and macOS remain experimental until their native signed-in
+   runs are independently confirmed. Passing CI does not establish those runs,
+   and WSL does not establish Windows behavior.
 5. Record the evidence in `release-readiness.md`. Missing checks stay pending;
    a prepared workflow or successful fake-worker test is not end-to-end evidence.
 
@@ -128,7 +128,7 @@ Windows. A fresh chat on an existing user profile is not a clean-machine test.
 4. Test the published installation from outside the source checkout:
 
    ```bash
-   codex plugin marketplace add OWNER/burnt-offering --ref v0.1.0-beta.1
+   codex plugin marketplace add darvilp/burnt-offering --ref v0.1.0-beta.1
    codex plugin add burnt-offering@burnt-offering
    ```
 
@@ -146,7 +146,7 @@ the desired release tag, and install it again:
 ```bash
 codex plugin remove burnt-offering@burnt-offering
 codex plugin marketplace remove burnt-offering
-codex plugin marketplace add OWNER/burnt-offering --ref VERSION_TAG
+codex plugin marketplace add darvilp/burnt-offering --ref VERSION_TAG
 codex plugin add burnt-offering@burnt-offering
 ```
 

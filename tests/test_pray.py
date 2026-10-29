@@ -36,6 +36,25 @@ def make_spec(**overrides):
 
 
 class ConfigurationTests(unittest.TestCase):
+    def test_missing_runner_reconciles_running_and_stopping(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)
+            for state in ("RUNNING", "STOPPING", "STOPPED"):
+                with self.subTest(state=state):
+                    saved = {"state": state, "runner_pid": 123, "runner_start": "identity",
+                             "stop_reason": "user_stop", "usage_complete": True}
+                    (path / "status.json").write_text(json.dumps(saved), encoding="utf-8")
+                    with mock.patch.object(pray, "process_start", return_value=None):
+                        observed = pray.read_status(path)
+                    if state == "STOPPED":
+                        self.assertEqual(observed, saved)
+                    else:
+                        self.assertEqual(observed["state"], "INTERRUPTED")
+                        self.assertEqual(observed["stop_reason"], "runner_missing")
+                        self.assertFalse(observed["usage_complete"])
+                    with mock.patch.object(pray, "process_start", return_value="identity"):
+                        self.assertEqual(pray.read_status(path), saved)
+
     def test_four_model_selection_cases(self):
         controller = {"model": "controller", "reasoningEffort": "high"}
         cases = [(None, None, "controller", "high"), ("worker", None, "worker", "low"),

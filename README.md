@@ -13,17 +13,16 @@ This consumes your Codex usage. A short duration is the easiest way to try it.
 Ask the chat to stop whenever you want, and keep the Codex environment active
 while a run is in progress.
 
-## Install the preview
+## Install
 
-The current preview is `0.1.0-beta.1`. The repository is private and there is no
-tagged release yet, so Git needs authenticated read access to install it.
+The first beta is `0.1.0-beta.1`. Install the tagged version:
 
 You need Python 3.11+ and an authenticated Codex CLI in the same environment as
 your Codex chat. The tested CLI baseline is `0.164.0`; there are no extra Python
 runtime packages.
 
 ```bash
-codex plugin marketplace add darvilp/burnt-offering --ref main
+codex plugin marketplace add darvilp/burnt-offering --ref v0.1.0-beta.1
 codex plugin add burnt-offering@burnt-offering
 ```
 
@@ -37,8 +36,8 @@ It will ask for the intention, recipients and stopping rule, with optional style
 language, model and effort choices. Gathering settings starts no prayer work.
 You can also supply the settings in your invocation, as in the example above.
 
-Linux/WSL has signed-in runtime testing. Native Windows still needs signed-in
-acceptance, and macOS is experimental. See [platform evidence and remaining
+Linux/WSL has signed-in runtime testing. Native Windows and macOS are experimental
+pending signed-in runtime acceptance. See [platform evidence and remaining
 checks](docs/release-readiness.md) before choosing a test environment. For a
 repeatable installation test pinned to a commit, use the
 [fresh-install procedure](docs/RELEASING.md#fresh-install-candidate-check).
@@ -77,6 +76,8 @@ The runner handles repetition without further prompts from you. Ask the chat to
 stop and wait for confirmation that the run has ended. Runs need the foreground
 helper and active Codex environment; they do not survive application shutdown or
 restart automatically.
+If the helper disappears during prayer or cleanup, offline status reports the run
+as interrupted and marks its usage incomplete.
 
 ## Reports and saved prayers
 
